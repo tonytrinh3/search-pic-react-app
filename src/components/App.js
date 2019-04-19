@@ -1,12 +1,39 @@
 import React, { Component } from 'react';
+import unsplash from '../api/unsplash';
 import SearchBar from './SearchBar';
 
 
 
 class App extends Component {
-  onSearchSubmit(term){
-    console.log(term);
+
+    state = { images: [] };
+
+
+
+  // onSearchSubmit(term){
+  //   axios.get('https://api.unsplash.com/search/photos',{
+  //     params: { query: term},
+  //     headers: {
+  //       Authorization: 'Client-ID e415ef54cc1c072081b3c668c7d478aed82955aec8b9573f329974be196f49d0'
+  //     }
+
+  //   }).then(response => {
+  //     console.log(response.data.results);
+  //   })
+  // }
+
+  //need to make it an arrow function in order to use this with state
+  onSearchSubmit = async (term) => {
+    const response = await unsplash.get('/search/photos',{
+      params: { query: term}
+    });
+
+    console.log(response.data.results);
+
+    this.setState({ images: response.data.results });
+
   }
+
 
 
 
@@ -14,7 +41,8 @@ class App extends Component {
   render() {
     return (
       <div className = 'ui container' style = {{ marginTop: '10px'}} >
-        <SearchBar/>
+        <SearchBar onSubmit = {this.onSearchSubmit}/>
+        Found: {this.state.images.length} images
       </div>
     );
   }
